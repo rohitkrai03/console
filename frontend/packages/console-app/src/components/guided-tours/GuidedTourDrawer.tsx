@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Dispatch } from 'redux';
 import { connect } from 'react-redux';
 import { RootState } from '@console/internal/redux';
-import { Alert } from '@patternfly/react-core';
 import DrawerComponent from './DrawerComponent';
 import {
   getActiveTourID,
@@ -29,18 +28,13 @@ const GuidedTourDrawer: React.FC<GuidedTourDrawerProps> = ({
   children,
 }) => {
   const guidedTour = getGuidedTour(activeTourID);
-  // TODO: Add check for tour completed status
-  const tourCompleteAlert = (
-    <Alert variant="success" isInline title="This tour has already been completed" />
-  );
+  // TODO: Add check for tour completed status and send complete alert based on that
+  // const tourCompleteAlert = (
+  //   <Alert variant="success" isInline title="This tour has already been completed" />
+  // );
 
   return (
-    <DrawerComponent
-      expanded={isExpanded}
-      guidedTour={guidedTour}
-      onClose={onClose}
-      additionalHeaderContent={tourCompleteAlert}
-    >
+    <DrawerComponent expanded={isExpanded} guidedTour={guidedTour} onClose={onClose}>
       {children}
     </DrawerComponent>
   );
