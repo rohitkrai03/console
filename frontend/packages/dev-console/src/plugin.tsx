@@ -72,6 +72,10 @@ import {
 } from './components/topology/operators/operatorsTopologyPlugin';
 import { usePerspectiveDetection } from './utils/usePerspectiveDetection';
 import { getGuidedTour } from './components/guided-tour';
+import {
+  importFormsPlugin,
+  ImportFormsConsumedExtensions,
+} from './components/extensible-import/import-forms-plugin';
 
 const {
   ClusterTaskModel,
@@ -107,7 +111,8 @@ type ConsumedExtensions =
   | AddAction
   | GuidedTour
   | HelmTopologyConsumedExtensions
-  | OperatorsTopologyConsumedExtensions;
+  | OperatorsTopologyConsumedExtensions
+  | ImportFormsConsumedExtensions;
 
 const plugin: Plugin<ConsumedExtensions> = [
   {
@@ -522,6 +527,7 @@ const plugin: Plugin<ConsumedExtensions> = [
       path: [
         '/add',
         '/import',
+        '/extensible-import',
         '/import-sample',
         '/samples',
         '/topology',
@@ -613,6 +619,19 @@ const plugin: Plugin<ConsumedExtensions> = [
         (
           await import(
             './components/import/ImportPage' /* webpackChunkName: "dev-console-import" */
+          )
+        ).default,
+    },
+  },
+  {
+    type: 'Page/Route',
+    properties: {
+      exact: true,
+      path: ['/extensible-import/all-namespaces', '/extensible-import/ns/:ns'],
+      loader: async () =>
+        (
+          await import(
+            './components/extensible-import/GitFormik' /* webpackChunkName: "dev-console-extensible-import" */
           )
         ).default,
     },
@@ -1046,6 +1065,28 @@ const plugin: Plugin<ConsumedExtensions> = [
   {
     type: 'AddAction',
     properties: {
+      id: 'extensible-import-from-git',
+      url: '/extensible-import',
+      label: 'From Extensible Git',
+      description: 'Import code from your git repository to be built and deployed',
+      icon: importGitIcon,
+      accessReview: [
+        BuildConfigModel,
+        ImageStreamModel,
+        DeploymentConfigModel,
+        SecretModel,
+        RouteModel,
+        ServiceModel,
+      ].map((model) => ({
+        group: model.apiGroup || '',
+        resource: model.plural,
+        verb: 'create',
+      })),
+    },
+  },
+  {
+    type: 'AddAction',
+    properties: {
       id: 'deploy-image',
       url: '/deploy-image',
       label: 'Container Image',
@@ -1176,6 +1217,7 @@ const plugin: Plugin<ConsumedExtensions> = [
   },
   ...helmTopologyPlugin,
   ...operatorsTopologyPlugin,
+  ...importFormsPlugin,
 ];
 
 export default plugin;

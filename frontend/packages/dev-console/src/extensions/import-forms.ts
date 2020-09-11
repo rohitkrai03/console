@@ -6,7 +6,7 @@ import { K8sResourceKind } from '@console/internal/module/k8s';
 type ReactLazyLoader = () => Promise<{ default: ComponentType<any> }>;
 
 namespace ExtensionProperties {
-  export interface ImportFormSection {
+  export interface ImportSection {
     /** ID used to identify the section. */
     id: string;
     /** Component to render for the section. */
@@ -15,9 +15,11 @@ namespace ExtensionProperties {
     initialValues?: CodeRef<{ [key: string]: any }>;
     /** Yup validation schema that validates valus specific to this section. */
     validationSchema?: CodeRef<Yup>;
+    /** Handle actions specific to the section during submission of the form in addition to default submit actions. */
+    submitHandler?: CodeRef<(data: any, dryRun: boolean) => Promise<K8sResourceKind[]>>;
   }
 
-  export interface ImportFormSectionMapper {
+  export interface ImportSectionBinding {
     /** Forms that the section is contributed to */
     form: string[];
     /** Section id to map section to the forms */
@@ -28,7 +30,7 @@ namespace ExtensionProperties {
     advanced?: string;
     /** Insert this section before the section referenced here */
     insertBefore?: string;
-    /** Handle actions specific to the section during submission of the form in addition to default submit actions. */
+    /** Overrides default submit handler for the section. */
     submitHandler?: CodeRef<(data: any, dryRun: boolean) => Promise<K8sResourceKind[]>>;
   }
 
@@ -45,7 +47,7 @@ namespace ExtensionProperties {
     description?: string;
   }
 
-  export interface ImportResourceTypeMapper {
+  export interface ImportResourceTypeBinding {
     /** Forms that the resource type is contributed to */
     form: string[];
     /** Resource Type Id to map the resource type to the forms */
@@ -57,36 +59,35 @@ namespace ExtensionProperties {
   }
 }
 
-export interface ImportFormSection extends Extension<ExtensionProperties.ImportFormSection> {
-  type: 'Import/FormSection';
+export interface ImportSection extends Extension<ExtensionProperties.ImportSection> {
+  type: 'Import/Section';
 }
 
-export interface ImportFormSectionMapper
-  extends Extension<ExtensionProperties.ImportFormSectionMapper> {
-  type: 'Import/FormSectionMapper';
+export interface ImportSectionBinding extends Extension<ExtensionProperties.ImportSectionBinding> {
+  type: 'Import/SectionBinding';
 }
 
 export interface ImportResourceType extends Extension<ExtensionProperties.ImportResourceType> {
   type: 'Import/ResourceType';
 }
 
-export interface ImportResourceTypeMapper
-  extends Extension<ExtensionProperties.ImportResourceTypeMapper> {
-  type: 'Import/ResourceTypeMapper';
+export interface ImportResourceTypeBinding
+  extends Extension<ExtensionProperties.ImportResourceTypeBinding> {
+  type: 'Import/ResourceTypeBinding';
 }
 
-export const isImportFormSection = (e: Extension): e is ImportFormSection => {
-  return e.type === 'Import/FormSection';
+export const isImportSection = (e: Extension): e is ImportSection => {
+  return e.type === 'Import/Section';
 };
 
-export const isImportFormSectionMapper = (e: Extension): e is ImportFormSectionMapper => {
-  return e.type === 'Import/FormSectionMapper';
+export const isImportSectionBinding = (e: Extension): e is ImportSectionBinding => {
+  return e.type === 'Import/SectionBinding';
 };
 
 export const isImportResourceType = (e: Extension): e is ImportResourceType => {
   return e.type === 'Import/ResourceType';
 };
 
-export const isImportResourceTypeMapper = (e: Extension): e is ImportResourceTypeMapper => {
-  return e.type === 'Import/ResourceTypeMapper';
+export const isImportResourceTypeBinding = (e: Extension): e is ImportResourceTypeBinding => {
+  return e.type === 'Import/ResourceTypeBinding';
 };
