@@ -3,14 +3,8 @@ import * as _ from 'lodash';
 import { Action, ActionGroup, isActionGroup } from '@console/dynamic-plugin-sdk';
 import { useExtensions } from '@console/plugin-sdk';
 import ActionsLoader from './loader/ActionsLoader';
-import { MenuOption } from './menu/menu-types';
-import { createMenuOptions } from './menu/menu-utils';
-
-type ActionContext = {
-  [contextId: string]: any;
-};
-
-type ActionService = { actions: Action[]; options: MenuOption[]; loaded: boolean; error: any };
+import { ActionContext, ActionService, MenuOption } from './types';
+import { createMenuOptions } from './utils';
 
 type ActionServiceProviderProps = {
   context: ActionContext;

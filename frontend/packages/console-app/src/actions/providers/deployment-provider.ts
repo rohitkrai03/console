@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useK8sWatchResources } from '@console/internal/components/utils/k8s-watch-hook';
 import { HorizontalPodAutoscalerModel } from '@console/internal/models';
 import { K8sResourceKind, referenceFor, referenceForModel } from '@console/internal/module/k8s';
@@ -21,6 +22,7 @@ type DeployementActionExtraResources = {
 };
 
 export const useDeploymentActionsProvider = (resource: K8sResourceKind) => {
+  const { t } = useTranslation();
   const [kindObj, inFlight] = useK8sModel(referenceFor(resource));
   const [namespace] = useActiveNamespace();
   const watchedResources = React.useMemo(
@@ -65,7 +67,9 @@ export const useDeploymentActionsProvider = (resource: K8sResourceKind) => {
       DeploymentActionFactory.EditDeployment(kindObj, resource),
       CommonActionFactory.Delete(kindObj, resource),
     ],
-    [kindObj, relatedHPAs, resource, supportsHPA],
+    // We want to re-evaluate the actions every time we translation changes.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [kindObj, relatedHPAs, resource, supportsHPA, t],
   );
 
   return [deploymentActions, !inFlight, undefined];

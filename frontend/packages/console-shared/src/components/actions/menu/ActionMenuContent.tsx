@@ -11,9 +11,9 @@ import { AngleRightIcon } from '@patternfly/react-icons';
 import { Action } from '@console/dynamic-plugin-sdk';
 import { orderExtensionBasedOnInsertBeforeAndAfter } from '@console/shared';
 import { Popper } from '../../popper';
+import { GroupedMenuOption, MenuOption, MenuOptionType } from '../types';
+import { getMenuOptionType } from '../utils';
 import ActionMenuItem from './ActionMenuItem';
-import { GroupedMenuOption, MenuOption, MenuOptionType } from './menu-types';
-import { getMenuOptionType } from './menu-utils';
 
 type GroupMenuContentProps = {
   option: GroupedMenuOption;
